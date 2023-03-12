@@ -1,0 +1,16 @@
+.options .keyword .tags {
+    margin-top: 8px;
+}
+
+.options .keyword .tags button {
+    padding: 0 .3rem;
+    border: 1px solid rgba(68, 67, 67, 0.366);
+    background-color: transparent;
+    border-radius: 5px;
+    /* max-width: 5rem; */
+}
+
+.options .keyword .tags button.selected{
+    background-color: blue;
+    color: white;
+}
