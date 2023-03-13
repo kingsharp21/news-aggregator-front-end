@@ -1,4 +1,4 @@
-import FilterTag from "../filter_tags/FilterTag";
+
 import "./Customise.css";
 
 function Customise({visibility, close}) {
@@ -18,42 +18,6 @@ function Customise({visibility, close}) {
             <hr />
           </div>
           <div className="options grid">
-            <FilterTag
-              name="categories"
-              tags={[
-                "business",
-                "entertainment",
-                "general",
-                "health",
-                "science",
-                "sports",
-                "technology",
-              ]}
-            />
-            <FilterTag
-              name="sources"
-              tags={[
-                "bbc-news",
-                "bloomberg",
-                "abc-news",
-                // "al-jazeera-english",
-                // "google-news",
-                // "sports",
-                // "technology",
-              ]}
-            />
-            <FilterTag
-              name="authors"
-              tags={[
-                "business",
-                "entertainment",
-                "general",
-                "health",
-                "science",
-                "sports",
-                "technology",
-              ]}
-            />
             {/* <div className="keyword">
               <h2>Sources</h2>
               <div className="tags grid">
