@@ -17,13 +17,14 @@ export default function Feed({ sourceList }) {
 
   const [newsCount, setNewsCount] = useState(0);
 
-  const [sources, setSources] = useState("all");
+  const [sources, setSources] = useState("cars");
   const [view, setView] = useState("newsApi");
   const [search, setSearch] = useState("");
 
   const [news,setNews] = useState([])
   const fetchAllNews = () =>{
-    const newsApi = "https://newsapi.org/v2/everything?q=all&apiKey=b5699a0b9207405c9d5eb9825706dc7a";
+    const newsApi =
+      "https://newsapi.org/v2/everything?q=all&apiKey=5f2b885265784d9bbfcb967b0e760652";
     const guardianApi = `https://content.guardianapis.com/search?q=car&format=json&page-size=50&from-date=2010-01-01&show-tags=contributor&show-fields=starRating,headline,thumbnail,standfirst,publication,short-url&order-by=relevance&api-key=test`;
     const nytApi = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=qhjIoG09y3Aagg9CjdH4ieoDKxEa0PzZ`;
 
@@ -109,7 +110,7 @@ export default function Feed({ sourceList }) {
 
   const getNewsBySource = (keyword, source) => {
     Axios.get(
-      `https://newsapi.org/v2/everything?q=${keyword}&sortBy=popularity&sources=${source}&apiKey=b5699a0b9207405c9d5eb9825706dc7a`
+      `https://newsapi.org/v2/everything?q=${keyword}&sortBy=popularity&sources=${source}&apiKey=5f2b885265784d9bbfcb967b0e760652`
     )
       .then((response) => {
         setNews([]);
