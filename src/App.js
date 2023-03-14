@@ -21,7 +21,7 @@ function App() {
     let channels = [];
 
     Axios.get(
-      "https://newsapi.org/v2/top-headlines/sources?apiKey=5f2b885265784d9bbfcb967b0e760652"
+      "https://newsapi.org/v2/top-headlines/sources?apiKey=0f2afaa9d7a041c4829954e71f84c2df"
     )
       .then((response) => {
         const data = response.data.sources;
