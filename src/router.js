@@ -2,7 +2,10 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./Login";
 import Signup from "./Signup"
 import Feed from "./Feed";
+import App from './App'
 import NotFound from "./NotFounded";
+
+import {getSources} from './api/sources'
 
 const router = createBrowserRouter([
   {
@@ -14,8 +17,8 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/home",
-    element: <Feed />,
+    path: "/",
+    element: <App sourceList={getSources()}/>,
   },
   {
     path: "*",

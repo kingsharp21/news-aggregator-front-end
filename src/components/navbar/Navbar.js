@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Customise from "../customise/Customise";
 import "./Navbar.css";
 // import './App.css';
 function Navbar() {
+  const navigate = useNavigate();
   const [customise_setting, setCustomise_setting] = useState("hidden");
   const openPop = () => {
     setCustomise_setting("visible");
@@ -11,6 +13,12 @@ function Navbar() {
   const closePop = () => {
     setCustomise_setting("hidden");
   };
+
+  const logOut = () => {
+    localStorage.clear()
+    navigate("/login");
+  }
+
   return (
     <>
     <Customise visibility={customise_setting} close={closePop} />
@@ -27,15 +35,19 @@ function Navbar() {
             </button>
           </form>
         </div> */}
-        <div className="profile-section flex">
+        <div className='profile-section flex'>
           <button className="flex" onClick={openPop}>
             {" "}
             <i class="fa fa-sliders" aria-hidden="true"></i>
             Customise
           </button>
+          <button className='logout' onClick={logOut}>Logout</button>
+          <p className="user-name">{localStorage.getItem('user')}</p>
           <i class="fa fa-user" aria-hidden="true"></i>
-          {/* <h1>profile</h1> */}
         </div>
+        {/* <div className="profile-section flex">
+         
+        </div> */}
       </div>
     </nav>
     </>

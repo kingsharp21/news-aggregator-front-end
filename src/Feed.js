@@ -1,6 +1,9 @@
-import React ,{ useState, useEffect} from "react";
+import React ,{ useState, useEffect, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import Loading from "./components/loading/Loading";
+import LoadError from "./components/loaderror/LoadError";
 
 // import { getSources } from "./api/NewsApi";
 import Axios from "axios";
@@ -14,17 +17,18 @@ import axios from "axios";
 
 export default function Feed({ sourceList }) {
   const animatedComponents = makeAnimated();
-
-  const [newsCount, setNewsCount] = useState(0);
-
+  const navigate = useNavigate();
+  // const newsCount = useRef(0)
   const [sources, setSources] = useState("");
-  const [view, setView] = useState("newsApi");
+  const [newsCount, setnewsCount] = useState(0);
   const [search, setSearch] = useState("");
-
+  const [date, setDate] = useState("");
   const [news,setNews] = useState([])
+
+
   const fetchAllNews = () =>{
     const newsApi =
-      "https://newsapi.org/v2/everything?q=car&apiKey=0f2afaa9d7a041c4829954e71f84c2df";
+      "https://newsapi.org/v2/everything?q=car&apiKey=8f4c11b507624c2bb895ded0c0593953";
     const guardianApi = `https://content.guardianapis.com/search?q=car&format=json&page-size=50&from-date=2010-01-01&show-tags=contributor&show-fields=starRating,headline,thumbnail,standfirst,publication,short-url&order-by=relevance&api-key=test`;
     const nytApi = `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=qhjIoG09y3Aagg9CjdH4ieoDKxEa0PzZ`;
 
@@ -100,6 +104,7 @@ export default function Feed({ sourceList }) {
     return sheme
   };
 
+
   //RemoveHTHL Tags Fuction
   const removeHTML = (input) => {
     let tmp = document.createElement("div");
@@ -110,11 +115,14 @@ export default function Feed({ sourceList }) {
 
   const getNewsBySource = (keyword, source) => {
     Axios.get(
-      `https://newsapi.org/v2/everything?q=${keyword}&sortBy=popularity&sources=${source}&apiKey=0f2afaa9d7a041c4829954e71f84c2df`
+      `https://newsapi.org/v2/everything?q=${keyword}&sortBy=popularity&sources=${source}&apiKey=8f4c11b507624c2bb895ded0c0593953`
     )
       .then((response) => {
-        setNews([]);
         const data = response.data.articles;
+        if (data.length == 0) {
+          setNews('null')
+        }else{
+        setNews([]);
         data.map((article) => {
           const sheme = createSheme(
             article.urlToImage,
@@ -127,18 +135,23 @@ export default function Feed({ sourceList }) {
           );
           setNews((news) => [...news, sheme]);
         });
+      }
         // console.log(data);
       })
       .catch((error) => console.log(error));
   };
+
 
   const getDataWithoutSource = (keyword) => {
     Axios.get(
       `https://api.nytimes.com/svc/search/v2/articlesearch.json?q=${keyword}&api-key=qhjIoG09y3Aagg9CjdH4ieoDKxEa0PzZ`
     )
       .then((res) => {
-        setNews([]);
         const data = res.data.response.docs;
+        if (data.length == 0) {
+          setNews('null')
+        }else{
+          setNews([]);
 
         data.map((article) => {
           const sheme = createSheme(
@@ -153,6 +166,8 @@ export default function Feed({ sourceList }) {
           setNews((news) => [...news, sheme]);
         });
 
+        }
+        
       })
       .catch((error) => console.log(error));
   };
@@ -178,18 +193,24 @@ export default function Feed({ sourceList }) {
 
   const updateSearchValue = (event) => {
     setSearch(event.target.value);
+    console.log(event.target.value);
+  };
+  const updateDateValue = (event) => {
+    setDate(event.target.value);
+    console.log(event.target.value);
   };
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      navigate('/login')
+    }
     fetchAllNews();
   }, []);
 
   useEffect(()=>{
-    setNewsCount(news.length);
-    // if (!sources == "") {
-    //   getNewsBySource("cars", sources);
-    // }
-  },[news])
+    setnewsCount(news.length) ;
+  },[news.length])
 
 
 
@@ -211,8 +232,8 @@ export default function Feed({ sourceList }) {
               />
             </div>
             <div className="filter-input filter-by-authors ">
-              <label>Filter by Authors</label>
-              <Select
+              <label>Select Start Date</label>
+              {/* <Select
                 onChange={(newValue) => {
                   console.log(newValue);
                 }}
@@ -250,6 +271,12 @@ export default function Feed({ sourceList }) {
                   { value: "slate", label: "Slate", color: "#253858" },
                   { value: "silver", label: "Silver", color: "#666666" },
                 ]}
+              /> */}
+
+              <input
+                type="date"
+                onChange={updateDateValue}
+                placeholder="Search news..."
               />
             </div>
             <div className="filter-input filter-by-Source ">
@@ -270,15 +297,11 @@ export default function Feed({ sourceList }) {
                   } else {
                     setSources("");
                   }
-
-                  console.log(newValue);
-                  // setSources(newValue);
                 }}
                 placeholder="Select or type to search source"
                 closeMenuOnSelect={false}
                 components={animatedComponents}
                 isMulti
-                // options={getSources()}
                 options={sourceList}
               />
             </div>
@@ -287,6 +310,7 @@ export default function Feed({ sourceList }) {
             {`Total ${newsCount} news found in this search criteria`}
           </p>
           <div className="feed-cards grid">
+            {news.length == 0? <Loading/>:''}
             {Array.isArray(news)
               ? news.map((article, index) => {
                   return (
@@ -300,29 +324,10 @@ export default function Feed({ sourceList }) {
                       date={article.date}
                       desc={article.desc}
                     />
-                    // <Article
-                    //   key={index}
-                    //   img={`https://www.nytimes.com/${article.multimedia[1].url}` }
-                    //   apiname="The Guardian"
-                    //   source={article.source}
-                    //   title={article.abstract}
-                    //   url={article.web_url}
-                    //   date={article.publishedAt}
-                    //   desc={article.lead_paragraph}
-                    // />
-                    // <Article
-                    //   key={index}
-                    //   img={article.urlToImage}
-                    //   apiname="The Guardian"
-                    //   source={article.source.name}
-                    //   title={article.title}
-                    //   url={article.url}
-                    //   date={article.publishedAt}
-                    //   desc={article.content}
-                    // />
+                  
                   );
                 })
-              : console.log(null)}
+              : <LoadError/>}
           </div>
         </div>
       </div>

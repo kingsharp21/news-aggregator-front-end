@@ -1,33 +1,70 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import { useToasts } from 'react-toast-notifications'
 import { Link } from "react-router-dom";
-
 function Login() {
-  const [username, setUserName] = useState('')
-  const [password, setPassword] = useState('')
+  const navigate = useNavigate();
+  // const { addToast } = useToasts()
 
-
-  const ProceedLogin = (e)=>{
+  const [userEmail, setUserEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const ProceedLogin = (e) => {
     e.preventDefault();
     if (validate()) {
-      
+      const url = `http://178.62.5.150:1944/api/login?email=${userEmail}&password=${password}`
+      const requestOptions = {
+        method: 'POST',
+        // headers: { 'Content-Type': 'application/json' },
+    };
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status == "success"){
+            localStorage.setItem('token',data.data.id)
+            localStorage.setItem('user',data.data.name)
+            localStorage.setItem('authors',data.data.preference.authers)
+            localStorage.setItem('sources',data.data.preference.sources)
+            navigate("/");
+           
+          }else{
+            console.log(data.message);
+            // addToast(data.message, {
+            //   appearance: 'error',
+            //   autoDismiss: true,
+            // })
+          }
+        });
+       
+        console.log('====================================');
+        console.log('dome');
+        console.log('====================================');
     }
-  }
+  };
 
-  const validate = ()=>{
+  const validate = () => {
     let results = true;
-    if (username ==='' || username === null) {
+    if (userEmail === "" || userEmail === null) {
       results = false;
       toast("Hello Geeks");
-      console.log('please enter surname');
+      console.log("please enter surname");
     }
-    if (password ==='' || password === null) {
+    if (password === "" || password === null) {
       results = false;
       console.log("please enter password");
     }
     return results;
-  }
+  };
+  useEffect(() => {
+    // localStorage.setItem('token', '121212')
+    // localStorage.removeItem("token");
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <section className="login flex">
@@ -40,8 +77,8 @@ function Login() {
             type="email"
             className="form-control"
             placeholder="Enter email"
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
           />
         </div>
 
@@ -75,7 +112,7 @@ function Login() {
           </button>
         </div>
         <p className="register text-right">
-          Don't have an account yet ? <a href="#">register!</a>
+          Don't have an account yet ? <Link to={'/signup'}>register!</Link>
         </p>
       </form>
     </section>
@@ -83,5 +120,3 @@ function Login() {
 }
 
 export default Login;
-
-
