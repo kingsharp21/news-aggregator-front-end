@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 // import { useToasts } from 'react-toast-notifications'
 import { Link } from "react-router-dom";
 function Login() {
@@ -28,19 +30,21 @@ function Login() {
             localStorage.setItem('authors',data.data.preference.authers)
             localStorage.setItem('sources',data.data.preference.sources)
             navigate("/");
+
+           
            
           }else{
-            console.log(data.message);
-            // addToast(data.message, {
-            //   appearance: 'error',
-            //   autoDismiss: true,
-            // })
+            toast.error(data.message, {
+              position: toast.POSITION.TOP_RIGHT
+          });
+            
           }
-        });
-       
-        console.log('====================================');
-        console.log('dome');
-        console.log('====================================');
+        })
+        .then(error =>{
+          console.log(error);
+         
+        })
+  
     }
   };
 
@@ -68,6 +72,7 @@ function Login() {
 
   return (
     <section className="login flex">
+      <ToastContainer />
       <form onSubmit={ProceedLogin}>
         <h3>Sign In</h3>
 
@@ -78,7 +83,8 @@ function Login() {
             className="form-control"
             placeholder="Enter email"
             value={userEmail}
-            onChange={(e) => setUserEmail(e.target.value)}
+            onChange={(e) => setUserEmail(e.target.value.toLocaleLowerCase())}
+            required
           />
         </div>
 
@@ -90,6 +96,7 @@ function Login() {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
 

@@ -1,5 +1,7 @@
 import React ,{ useState, useEffect, useRef} from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import Loading from "./components/loading/Loading";
@@ -206,6 +208,9 @@ export default function Feed({ sourceList }) {
       navigate('/login')
     }
     fetchAllNews();
+    toast.success('Welcome Back', {
+      position: toast.POSITION.TOP_RIGHT
+  });
   }, []);
 
   useEffect(()=>{
@@ -217,6 +222,7 @@ export default function Feed({ sourceList }) {
   return (
     <>
       <div className="feed">
+      <ToastContainer />
         <div className="container feed-container">
           <div className="feed-header">
             <h2>News</h2>
